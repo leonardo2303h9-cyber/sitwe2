@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>menut</title>
+
+    <img src="imagem/f306.jpg" width="1357px" height="755px">
+</body>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+    
+#menu {
+
+height: 100%;
+width: 0;
+position: fixed;
+top: 0;
+left: 0;
+\\background-image: url(imagem/download.jpeg);
+\\background-size: 700px;
+\\background-repeat: no-repeat;
+\\background-position: top center;
+background-color: black;
+overflow: hidden;
+transition: 0.4s;
+padding-top: 60px;
+}
+
+#menu a {
+     padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    display: block;
+    border: 2px solid white;
+    margin: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+#menu a:hover{
+    background-color: white;
+    color: black;
+    transform: translateX(10px);
+}
+
+button {
+    margin: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+    </style>
+</head>
+
+<body>
+    
+<button onclick="abrirmenu()">Abrir Menu</button>
+<div id="menu">
+   <a href="pagina2.html" >pagina 2</a>
+   <a href="#">sobre</a>
+   <a href="#">contato</a>
+   <a href="https://www.youtube.com/?gl=BR&hl=pt">teste</a>
+</div>
+<script>
+function abrirmenu() {
+    let menu = document.getElementById("menu");
+
+if(menu.style.width === "200px") {
+     menu.style.width = "0";
+    } else {
+        menu.style.width = "200px";
+    }
+}
+function fecharmenu(){
+    document.getElementById("menu").style.width = "0";
+}
+    document.addEventListener("click", function(event){
+        let menu = document.getElementById("menu");
+        let botao =document.querySelector("button");
+
+        if(!menu.contains(event.target) &&!
+        botao.contains(event.target)){
+            menu.style.width = "0";
+        }
+    });
+
+</script>
+</body>
+</html>
