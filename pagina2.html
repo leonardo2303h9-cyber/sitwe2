@@ -1,32 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tela de regisro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login e Registro</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f2f2f2;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+background:white;
+padding:30px;
+border-radius:10px;
+width:300px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+width:100%;
+padding:10px;
+margin-top:10px;
+background:#333;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#555;
+}
+
+.link{
+margin-top:10px;
+color:blue;
+cursor:pointer;
+}
+
+</style>
 </head>
+
 <body>
-    <style>
-        body{
-            font-family: arial;
-            background: rgb(255, 255, 255);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container{
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 300px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            text-align: center;
-            
-        }
-        input{
-            
-        }
-    </style>
+
+<div class="container">
+
+<div id="login">
+
+<h2>Login</h2>
+
+<input type="text" placeholder="Usuário">
+
+<input type="password" placeholder="Senha">
+
+<button>Entrar</button>
+
+<p class="link" onclick="mostrarRegistro()">Criar conta</p>
+
+</div>
+
+
+<div id="registro" style="display:none;">
+
+<h2>Registro</h2>
+
+<input type="text" placeholder="Usuário">
+
+<input type="email" placeholder="Email">
+
+<input type="password" placeholder="Senha">
+
+<button>Criar conta</button>
+
+<p class="link" onclick="mostrarLogin()">Já tenho conta</p>
+
+</div>
+
+</div>
+
+<script>
+
+function mostrarRegistro(){
+document.getElementById("login").style.display="none";
+document.getElementById("registro").style.display="block";
+}
+
+function mostrarLogin(){
+document.getElementById("registro").style.display="none";
+document.getElementById("login").style.display="block";
+}
+
+</script>
+
 </body>
 </html>
