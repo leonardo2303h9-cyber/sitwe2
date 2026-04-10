@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Rye&display=swap" rel="stylesheet">
+
+<title>Tupinambá Store</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#2b1d12;
+    color:white;
+}
+
+/* HEADER */
+header{
+    background:#3e2a1f;
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.logo{
+    font-family:'Rye';
+    color:#c89b3c;
+    font-size:26px;
+}
+
+/* PRODUTOS */
+.produtos{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+    padding:20px;
+}
+
+.produto{
+    background:#3e2a1f;
+    border:2px solid #c89b3c;
+    padding:10px;
+    border-radius:10px;
+}
+
+.produto img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+button{
+    background:#c89b3c;
+    border:none;
+    padding:8px;
+    cursor:pointer;
+    margin-top:5px;
+}
+
+/* CARRINHO */
+#carrinho{
+    position:fixed;
+    right:-300px;
+    top:0;
+    width:300px;
+    height:100%;
+    background:#2b1d12;
+    padding:20px;
+    transition:0.3s;
+}
+
+#carrinho.ativo{right:0;}
+
+#btnCarrinho{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+}
+
+/* LOGIN ESTILO VIDRO */
+#login{
+    display:none;
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    background:url('https://tse2.mm.bing.net/th/id/OIP.xJIG-3D9N7J41hTuvIaLqAHaEo?rs=1&pid=ImgDetMain&o=7&rm=3') center/cover;
+}
+
+.login-box{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);
+    padding:30px;
+    border-radius:15px;
+    width:250px;
+    text-align:center;
+}
+
+.login-box h2{
+    font-family:'Rye';
+}
+
+.login-box input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:none;
+}
+
+.login-box button{
+    width:100%;
+    background:#8b2e1f;
+    color:white;
+}
+
+/* ADMIN */
+#adminPanel{
+    display:none;
+    padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">🤠 Tupinambá</div>
+
+<div>
+<span id="userName"></span>
+<button onclick="abrirLogin()">Login</button>
+<button onclick="logout()">Sair</button>
+</div>
+</header>
+
+<div id="produtos" class="produtos"></div>
+
+<!-- ADMIN -->
+<div id="adminPanel">
+<h2>Admin</h2>
+<input id="nome" placeholder="Nome">
+<input id="img" placeholder="Imagem URL">
+<input id="preco" placeholder="Preço">
+<input id="estoque" placeholder="Estoque">
+<button onclick="addProduto()">Adicionar</button>
+</div>
+
+<!-- HISTÓRICO -->
+<div id="historico"></div>
+
+<!-- CARRINHO -->
+<div id="carrinho"></div>
+<button id="btnCarrinho" onclick="toggleCarrinho()">🛒</button>
+
+<!-- LOGIN -->
+<div id="login">
+<div class="login-box">
+<h2>LOGIN</h2>
+<input id="loginUser" placeholder="Usuário">
+<input id="loginPass" type="password" placeholder="Senha">
+<button onclick="fazerLogin()">ENTRAR</button>
+<p onclick="abrirCadastro()">Criar conta</p>
+</div>
+</div>
+
+<!-- CADASTRO -->
+<div id="cadastro" class="login-box" style="display:none;">
+<h2>Cadastro</h2>
+<input id="cadUser">
+<input id="cadPass" type="password">
+<button onclick="cadastrar()">Criar</button>
+</div>
+
+<script>
+
+/* DADOS */
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [
+{user:"admin", pass:"1234", tipo:"admin", historico:[]}
+];
+
+let usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado")) || null;
+
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+/* SALVAR */
+function salvar(){
+localStorage.setItem("usuarios",JSON.stringify(usuarios));
+localStorage.setItem("produtos",JSON.stringify(produtos));
+localStorage.setItem("usuarioLogado",JSON.stringify(usuarioLogado));
+localStorage.setItem("carrinho",JSON.stringify(carrinho));
+}
+
+/* LOGIN */
+function abrirLogin(){
+document.getElementById("login").style.display="block";
+}
+
+function fazerLogin(){
+let u=document.getElementById("loginUser").value;
+let p=document.getElementById("loginPass").value;
+
+let user=usuarios.find(x=>x.user===u && x.pass===p);
+
+if(user){
+usuarioLogado=user;
+salvar();
+document.getElementById("login").style.display="none";
+atualizarUsuario();
+}else{
+alert("Erro");
+}
+}
+
+/* CADASTRO */
+function abrirCadastro(){
+document.getElementById("login").style.display="none";
+document.getElementById("cadastro").style.display="block";
+}
+
+function cadastrar(){
+usuarios.push({
+user:document.getElementById("cadUser").value,
+pass:document.getElementById("cadPass").value,
+tipo:"cliente",
+historico:[]
+});
+salvar();
+alert("Criado!");
+document.getElementById("cadastro").style.display="none";
+}
+
+/* USUARIO */
+function atualizarUsuario(){
+if(usuarioLogado){
+document.getElementById("userName").innerText="Olá, "+usuarioLogado.user;
+
+if(usuarioLogado.tipo==="admin"){
+document.getElementById("adminPanel").style.display="block";
+}
+
+mostrarHistorico();
+}
+}
+
+/* LOGOUT */
+function logout(){
+usuarioLogado=null;
+salvar();
+location.reload();
+}
+
+/* PRODUTOS */
+function mostrarProdutos(){
+let div=document.getElementById("produtos");
+div.innerHTML="";
+
+produtos.forEach((p,i)=>{
+div.innerHTML+=`
+<div class="produto">
+<img src="${p.img}">
+<h3>${p.nome}</h3>
+<p>R$ ${p.preco}</p>
+<p>Estoque: ${p.estoque}</p>
+
+<button onclick="comprar(${i})">Comprar</button>
+
+${usuarioLogado && usuarioLogado.tipo==="admin" ? `
+<button onclick="remover(${i})">Excluir</button>
+` : ''}
+
+</div>
+`;
+});
+}
+
+/* ADD PRODUTO */
+function addProduto(){
+
+if(!usuarioLogado || usuarioLogado.tipo!=="admin"){
+alert("Apenas admin!");
+return;
+}
+
+let nome=document.getElementById("nome").value;
+let img=document.getElementById("img").value;
+let preco=document.getElementById("preco").value;
+let estoque=document.getElementById("estoque").value;
+
+if(!nome || !img || !preco || !estoque){
+alert("Preencha tudo!");
+return;
+}
+
+produtos.push({
+nome:nome,
+img:img,
+preco:Number(preco),
+estoque:Number(estoque)
+});
+
+salvar();
+mostrarProdutos();
+
+alert("Produto adicionado!");
+}
+
+/* REMOVER */
+function remover(i){
+produtos.splice(i,1);
+salvar();
+mostrarProdutos();
+}
+
+/* CARRINHO */
+function toggleCarrinho(){
+let c=document.getElementById("carrinho");
+c.classList.toggle("ativo");
+renderCarrinho();
+}
+
+function comprar(i){
+if(produtos[i].estoque<=0){
+alert("Sem estoque!");
+return;
+}
+
+carrinho.push(produtos[i]);
+produtos[i].estoque--;
+
+salvar();
+mostrarProdutos();
+renderCarrinho();
+}
+
+/* RENDER */
+function renderCarrinho(){
+let div=document.getElementById("carrinho");
+let total=0;
+
+div.innerHTML="<h2>Carrinho</h2>";
+
+carrinho.forEach(p=>{
+total+=p.preco;
+div.innerHTML+=`<p>${p.nome} - R$ ${p.preco}</p>`;
+});
+
+div.innerHTML+=`
+<h3>Total: R$ ${total}</h3>
+<button onclick="finalizar()">Finalizar</button>
+`;
+}
+
+/* FINALIZAR */
+function finalizar(){
+if(carrinho.length===0){
+alert("Carrinho vazio");
+return;
+}
+
+let user=usuarios.find(u=>u.user===usuarioLogado.user);
+user.historico.push([...carrinho]);
+
+carrinho=[];
+salvar();
+
+renderCarrinho();
+mostrarHistorico();
+
+alert("Compra finalizada!");
+}
+
+/* HISTORICO */
+function mostrarHistorico(){
+let div=document.getElementById("historico");
+
+let user=usuarios.find(u=>u.user===usuarioLogado.user);
+
+div.innerHTML="<h2>Histórico</h2>";
+
+user.historico.forEach((compra,i)=>{
+div.innerHTML+=`<p>Compra ${i+1}: ${compra.map(p=>p.nome).join(", ")}</p>`;
+});
+}
+
+/* INIT */
+mostrarProdutos();
+atualizarUsuario();
+renderCarrinho();
+
+</script>
+
+</body>
+</html>
