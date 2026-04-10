@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+
+/* FONTE */
+@font-face {
+  font-family: 'texas_tango';
+  src: url('fontes/texas_tango.otf') format('opentype');
+}
+
+/* ANIMAÇÃO */
+@keyframes aparecer{
+from{
+opacity:0;
+transform: translateY(30px);
+}
+to{
+opacity:1;
+transform: translateY(0);
+}
+}
+
+/* BODY */
+body{
+font-family: 'texas_tango', sans-serif;
+background-image: url("imagem/fundo.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+/* CONTAINER */
+.container{
+font-family: 'texas_tango', sans-serif;
+background: rgba(255, 255, 255, 0.25);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+padding:50px;
+border-radius:20px;
+width:140%;
+max-width: 450px;
+box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+border: 1px solid rgba(255,255,255,0.2);
+text-align:center;
+animation: aparecer 0.6s ease;
+position: relative;
+margin-top: 80px;
+}
+
+/* TÍTULO */
+h2{
+font-family: 'texas_tango', sans-serif;
+font-size:70px;
+letter-spacing:3px;
+text-shadow: 2px 2px 8px rgba(116, 62, 2, 0.6);
+}
+
+/* INPUTS */
+input{
+font-size: 50px;
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+border:none;
+outline:none;
+background: rgba(112, 106, 102, 0.568);
+color:#000;
+box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+}
+
+imput:focus{
+    border: 2px solid #a0522d;
+    box-shadow: 0 0 10px rgba(160, 82, 45, 0.5);
+}
+
+/* BOTÃO */
+button{
+font-size: 45px;
+width:100%;
+padding:12px;
+background: linear-gradient(45deg, #471f01, #72390b);
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+font-family: 'texas_tango', sans-serif;
+}
+
+button:hover{
+transform: scale(1.05);
+box-shadow:0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* LINK */
+.link{
+font-size: 40px;
+margin-top:10px;
+color:black;
+cursor:pointer;
+}
+
+.icone{
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.icone img{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #5a2e1f, #8b5a2b);
+  padding: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* CONTAINER DO ÍCONE */
+.icone{
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: iconeEntrada 0.6s ease;
+}
+
+/* BORDA BRILHANDO */
+.icone::before{
+  content: "";
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  z-index: -1;
+  animation: brilho 3s linear infinite;
+  filter: blur(8px);
+}
+
+/* IMAGEM */
+.icone img{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #5a2e1f, #8b5a2b);
+  padding: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  transition: 0.3s;
+  object-fit: cover;
+}
+
+/* HOVER (quando passa o mouse) */
+.icone:hover img{
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+#erro{
+    color: red;
+    margin-top: 10px;
+    font-size: 35px;
+}
+
+.senha-box{
+    position: relative;
+}
+
+.senha-box span{
+    position: absolute;
+    right: 10px;
+    top: 50px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* CONTAINER SENHA */
+.senha-box{
+  position: relative;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="icone">
+    <img src="imagem/user.png" alt="Usuário">
+  </div>
+<div
+    class="icone">
+<div class="avatar"></div>
+</div>
+<!-- LOGIN -->
+<div id="login">
+<h2>LOGIN</h2>
+
+<input type="text" id="loginUsuario" placeholder="Usuário">
+<input type="text" id="loginCPF" placeholder="CPF" maxlength="14" oninput="formatarCPF(this)">
+<div class="senha-box">
+<input type="password" id="loginSenha" placeholder="Senha">
+<span id="btnSenha" class="olho"></span>
+</div>
+<button onclick="fazerLogin()">Entrar</button>
+
+<p class="link" onclick="mostrarRegistro()">Criar conta</p>
+<p id="erro" > </p>                    
+</div>
+
+<!-- REGISTRO -->
+<div id="registro" style="display:none;">
+<h2>Registro</h2>
+
+<input type="text" id="regUsuario" placeholder="Usuário">
+<input type="text" id="regCPF" placeholder="CPF" maxlength="14" oninput="formatarCPF(this)">
+<input type="password" id="regSenha" placeholder="Senha">
+
+<button onclick="registrar()">Registrar</button>
+
+<p class="link" onclick="mostrarLogin()">Já tenho conta</p>
+</div>
+
+</div>
+
+<script>
+
+// alternar telas
+function mostrarRegistro(){
+document.getElementById("login").style.display="none";
+document.getElementById("registro").style.display="block";
+}
+
+function mostrarLogin(){
+document.getElementById("registro").style.display="none";
+document.getElementById("login").style.display="block";
+}
+
+// formatar CPF
+function formatarCPF(input){
+let cpf = input.value.replace(/\D/g, "");
+cpf = cpf.substring(0, 11);
+cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+input.value = cpf;
+}
+
+// validar CPF
+function validarCPF(cpf){
+cpf = cpf.replace(/\D/g, "");
+
+if(cpf.length !== 11) return false;
+if (/^(\d)\1+$/.test(cpf)) return false;
+
+let soma = 0;
+let resto;
+
+for (let i = 1; i <= 9; i++){
+soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+}
+
+resto = (soma * 10) % 11;
+if ((resto === 10) || (resto === 11)) resto = 0;
+if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
+soma = 0;
+for (let i = 1; i <= 10; i++){
+soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+}
+
+resto = (soma * 10) % 11;
+if ((resto === 10) || (resto === 11)) resto = 0;
+if (resto !== parseInt(cpf.substring(10, 11))) return false;
+
+return true;
+}
+
+// registrar
+function registrar(){
+let usuario = document.getElementById("regUsuario").value;
+let cpf = document.getElementById("regCPF").value;
+let senha = document.getElementById("regSenha").value;
+
+if(!validarCPF(cpf)){
+document.getElementById("erro").innerText = "Dados incorretos";
+return;
+}
+
+localStorage.setItem("usuario", usuario);
+localStorage.setItem("cpf", cpf);
+localStorage.setItem("senha", senha);
+
+alert("Conta criada!");
+mostrarLogin();
+}
+
+// login
+function fazerLogin(){
+let usuario = document.getElementById("loginUsuario").value;
+let cpf = document.getElementById("loginCPF").value;
+let senha = document.getElementById("loginSenha").value;
+
+let usuarioSalvo = localStorage.getItem("usuario");
+let cpfSalvo = localStorage.getItem("cpf");
+let senhaSalva = localStorage.getItem("senha");
+
+if(usuario === usuarioSalvo && cpf === cpfSalvo && senha === senhaSalva){
+
+localStorage.setItem("logado", "true");
+
+window.location.href = "index.html";
+
+}else{
+document.getElementById("erro").innerText = "dados incorretos";
+}
+}
+document.addEventListener("keydown", function(event){
+
+if(event.key === "Enter"){
+
+let login = document.getElementById("login");
+let registro = document.getElementById("registro");
+
+if(getComputedStyle(login).display !== "none"){
+fazerLogin();
+}else if(getComputedStyle(registro).display !== "none"){
+registrar();
+}
+
+}
+
+});
+
+
+
+</script>
+
+</body>
+</html>
+
+</body>
+</html>
